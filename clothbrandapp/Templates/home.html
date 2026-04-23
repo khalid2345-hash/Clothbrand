@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+<style>
+  /* ===== GENERAL ===== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    color: #111;
+}
+
+.section-title {
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* ===== HERO ===== */
+.hero {
+    height: 90vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    color: white;
+}
+
+.overlay h1 {
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.btn-shop {
+    background: black;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.btn-shop:hover {
+    background: gold;
+    color: black;
+}
+
+/* ===== CATEGORY ===== */
+/* ===== CATEGORY UPGRADE ===== */
+
+.category-link {
+    text-decoration: none;
+}
+
+.category-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    height: 400px;
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+/* DARK OVERLAY */
+.category-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+
+    color: white;
+    transition: 0.4s;
+}
+
+/* TEXT STYLE */
+.category-overlay h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.category-overlay span {
+    font-size: 14px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* HOVER EFFECT 🔥 */
+.category-card:hover img {
+    transform: scale(1.1);
+}
+
+.category-card:hover .category-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3));
+}
+
+/* ===== PRODUCTS ===== */
+/* HEADER */
+.section-header h2 {
+    font-weight: 600;
+}
+
+.divider {
+    width: 50px;
+    height: 2px;
+    background: #C9A96E;
+    margin: 10px auto 30px;
+}
+
+/* CARD */
+.product-card {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.product-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.product-card:hover img {
+    transform: scale(1.08);
+}
+
+/* OVERLAY */
+.product-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.view-btn {
+    background: white;
+    color: black;
+    padding: 8px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+/* INFO */
+.product-info {
+    padding: 12px;
+}
+
+.product-info h6 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.price {
+    color: #C9A96E;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ADD BUTTON */
+.add-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: black;
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 34px;
+    font-size: 18px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.add-btn:hover {
+    background: #C9A96E;
+    color: black;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SLIDER ================= -->
+<section class="hero">
+    <div class="slider">
+
+        {% for image in sliding_images %}
+        <div class="slide {% if forloop.first %}active{% endif %}">
+            <img src="{{ image.image.url }}" alt="slide">
+            <div class="overlay">
+                <h1>Luxury Redefined</h1>
+                <p>Discover timeless fashion</p>
+                <a href="#shop" class="btn-shop">Shop Now</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+<section class="categories container" id="shop">
+    <h2 class="section-title text-center">Collections</h2>
+
+    <div class="row g-4">
+
+        {% for category in categories %}
+        
+        <div class="col-12 col-md-4">
+            <a href="{% url 'category' category.slug %}" class="category-link">
+
+                <div class="category-card">
+
+                    {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                    {% endif %}
+
+                    <div class="category-overlay">
+                        <h3>{{ category.name }}</h3>
+                        <span>Explore</span>
+                    </div>
+
+                </div>
+
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="products container">
+
+    <div class="section-header text-center">
+        <h2>New Arrivals</h2>
+        <div class="divider"></div>
+    </div>
+
+    <div class="row g-4">
+
+        {% for product in products %}
+        <div class="col-6 col-md-4 col-lg-3">
+
+            <div class="product-card">
+
+                <!-- IMAGE -->
+                <div class="product-img">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+
+                    <!-- HOVER ACTION -->
+                    <div class="product-overlay">
+                        <a href="{% url 'product_detail' product.slug %}" class="view-btn">
+                            View
+                        </a>
+                    </div>
+                </div>
+
+                <!-- INFO -->
+                <div class="product-info">
+                    <h6>{{ product.name }}</h6>
+                    <p class="price">₦{{ product.Product_price }}</p>
+                </div>
+
+                <!-- QUICK ADD -->
+                <a href="{% url 'add_to_cart' product.id %}" class="add-btn" data-product-id="{{ product.id }}"
+    data-url="{% url 'add_to_cart' product.id %}">
+                    +
+                </a>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Hero slider functionality
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    setInterval(nextSlide, 5000); // Change slide every 5 seconds
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const carousel = document.querySelector('#homepageCarousel');
+    if (carousel) {
+        new bootstrap.Carousel(carousel, {
+            interval: 4000,
+            pause: false
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.add-btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('data-product-id');
+            const url = this.getAttribute('data-url');
+
+            fetch(url, {   // Make sure URL matches your urls.py
+                method: 'GET',   // or POST if you change to POST
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart count in navbar (example)
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) cartCount.textContent = data.cart_count;
+                    
+                    // Optional: Show success message
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+
+// Simple notification function
+function showNotification(message) {
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+        position: fixed; top: 20px; right: 20px; 
+        background: #4CAF50; color: white; padding: 15px 20px;
+        border-radius: 5px; z-index: 10000;
+    `;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+    
+    setTimeout(() => notif.remove(), 2500);
+}
+</script>
+
+{% endblock %}

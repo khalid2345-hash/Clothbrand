@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+<title>Kush Luxury</title>
+{% endblock %}
+
+<link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+{% bootstrap_css %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+{% block styles %}{% endblock %}
+
+<style>
+
+/* GLOBAL */
+body {
+  font-family: 'Poppins', sans-serif;
+   background: #0f0f10;
+}
+
+
+
+/* NAVBAR */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(8, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* LOGO */
+.brand-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* NAV LINKS */
+.nav-link-custom {
+  color: #f8f8f8;
+  font-weight: 500;
+}
+
+/* SEARCH */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #f1f3f5;
+  border-radius: 50px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.search-bar button {
+  border: none;
+  background: #848484;
+  color: white;
+  border-radius: 50%;
+  padding: 6px 10px;
+}
+
+/* CART */
+.icon-btn {
+  font-size: 20px;
+  color: #f8f8f8;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  font-size: 10px;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+  border-radius: 12px;
+  border: none;
+  padding: 10px;
+}
+
+/* MAIN */
+.main-container {
+  padding-top: 20px;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 30px 15px;
+  background: #333333;
+  margin-top: 60px;
+}
+
+/* FLOAT */
+.whatsapp-float {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: #25D366;
+  color: white;
+  font-size: 20px;
+  padding: 14px;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+/* MOBILE IMPROVEMENTS */
+@media (max-width: 768px) {
+
+  .brand-logo {
+    font-size: 18px;
+  }
+
+  .search-bar {
+    margin-top: 10px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+
+    <!-- LOGO -->
+    <a class="navbar-brand brand-logo" href="/">
+      kush Luxury
+    </a>
+
+    <!-- TOGGLE BUTTON -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- NAV CONTENT -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+
+      <!-- SEARCH -->
+      <form class="search-bar my-3 my-lg-0 mx-lg-3" method="GET" action="{% url 'search' %}">
+        <input type="search" name="q" placeholder="Search...">
+        <button>🔍</button>
+      </form>
+
+      <!-- NAV RIGHT -->
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- CART -->
+        <li class="nav-item me-3">
+          <a class="icon-btn position-relative" href="{% url 'view_cart' %}">
+            <i class="bi bi-bag"></i>
+            <span class="badge bg-danger cart-badge">
+              {{ request.session.cart|length|default:0 }}
+            </span>
+          </a>
+        </li>
+
+        <!-- CATEGORY -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle nav-link-custom" href="#" data-bs-toggle="dropdown">
+            collections
+          </a>
+
+          <ul class="dropdown-menu">
+            {% for category in categories %}
+            <li>
+              <a class="dropdown-item" href="{% url 'category' category.slug %}">
+                {{ category.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+      </ul>
+
+      
+            
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+</header>
+
+<!-- MAIN -->
+<div class="container main-container">
+  {% block content %}
+  {% endblock %}
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <h6>Kush Luxury Dress</h6>
+  <p>Premium Luxury Dress  for Fashion.</p>
+  <small>© 2026 All rights reserved.</small>
+</footer>
+
+<!-- FLOAT BUTTON -->
+<a href="https://wa.me/2348159283025" class="whatsapp-float" target="_blank">
+💬
+</a>
+
+<!-- BOOTSTRAP -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>

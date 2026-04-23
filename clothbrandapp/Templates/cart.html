@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Cart | Kush Luxury</title>
+{% endblock %}
+
+{% block styles %}
+<style>
+
+/* PAGE */
+.cart-page {
+    padding-top: 40px;
+}
+
+/* TITLE */
+.cart-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: white;
+}
+
+.divider {
+    width: 50px;
+    height: 2px;
+    background: #C9A96E;
+    margin: 10px auto;
+}
+
+/* ITEM */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.cart-item:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.cart-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* INFO */
+.cart-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.cart-info h6 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.price {
+    font-size: 13px;
+    color: #C9A96E;
+}
+
+/* QTY */
+.qty-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.qty-box a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+/* RIGHT */
+.cart-right {
+    text-align: right;
+}
+
+.subtotal {
+    font-weight: bold;
+}
+
+.remove {
+    text-decoration: none;
+    color: red;
+    font-size: 18px;
+}
+
+/* SUMMARY */
+.cart-summary {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.summary-row.total {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* BUTTON */
+.checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: black;
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.checkout-btn:hover {
+    background: #C9A96E;
+    color: black;
+}
+
+/* CONTINUE */
+.continue-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #fafafa;
+}
+
+/* MOBILE */
+@media (max-width:768px) {
+
+.cart-item {
+    flex-direction: row;
+    gap: 10px;
+}
+
+.cart-summary {
+    margin-top: 20px;
+}
+
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container cart-page">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h2 class="cart-title">Your Cart</h2>
+        <div class="divider"></div>
+    </div>
+
+    <div class="row g-5">
+
+        <!-- LEFT: ITEMS -->
+        <div class="col-lg-8">
+
+            {% for item in cart_items %}
+            <div class="cart-item">
+
+                <!-- IMAGE -->
+                <img src="{{ item.product.image.url }}" class="cart-img">
+
+                <!-- INFO -->
+                <div class="cart-info">
+                    <h6>{{ item.product.name }}</h6>
+                    <p class="price">₦{{ item.product.Product_price }}</p>
+
+                    <!-- QTY -->
+                    <div class="qty-box">
+                        <a href="{% url 'update_cart' item.product.id 'decrease' %}">−</a>
+                        <span>{{ item.quantity }}</span>
+                        <a href="{% url 'update_cart' item.product.id 'increase' %}">+</a>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE -->
+                <div class="cart-right">
+                    <p class="subtotal">₦{{ item.subtotal }}</p>
+
+                    <a href="{% url 'remove_from_cart' item.product.id %}" class="remove">
+                        ×
+                    </a>
+                </div>
+
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">Your cart is empty</p>
+            {% endfor %}
+
+            <a href="/" class="continue-link">← Continue Shopping</a>
+
+        </div>
+
+        <!-- RIGHT: SUMMARY -->
+        <div class="col-lg-4">
+
+            <div class="cart-summary">
+
+                <h5>Summary</h5>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₦{{ total }}</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>₦{{ total }}</span>
+                </div>
+
+                <a href="{% url 'initiate_payment' %}" class="checkout-btn">
+                    Checkout
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

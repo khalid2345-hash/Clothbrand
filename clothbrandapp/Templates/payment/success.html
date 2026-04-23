@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    .success-icon {
+      animation: scaleCheck 0.6s ease-in-out;
+    }
+    @keyframes scaleCheck {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: fall 4s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+
+  <div class="max-w-lg w-full mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden relative">
+    
+    <!-- Success Header -->
+    <div class="bg-emerald-600 text-white py-8 text-center relative">
+      <div class="success-icon mx-auto w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg">
+        <i class="fa-solid fa-circle-check text-emerald-600 text-6xl"></i>
+      </div>
+      <h1 class="text-4xl font-bold mt-4">Payment Successful!</h1>
+      <p class="text-emerald-100 mt-1">Thank you for your purchase</p>
+    </div>
+
+    <!-- Content -->
+    <div class="p-8">
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6 mb-8">
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Reference Number:</span>
+            <span class="font-mono font-semibold text-gray-800">{{ payment.ref|slice:":12" }}...</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Amount Paid:</span>
+            <span class="text-3xl font-bold text-emerald-600">₦{{ payment.amount|floatformat:2 }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Email:</span>
+            <span class="font-medium">{{ payment.email }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Date:</span>
+            <span class="font-medium">{{ payment.created_at|date:"d M, Y - h:i A" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Message -->
+      <div class="text-center mb-8">
+        <p class="text-gray-700 text-lg">
+          Your transaction has been completed successfully.<br>
+          A receipt has been sent to your email.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="/" 
+           class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-6 rounded-2xl text-center transition-all duration-200 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-house"></i>
+          Back to Homepage
+        </a>
+        
+        <a href="{% url 'orders' %}" 
+           class="flex-1 bg-white border-2 border-gray-300 hover:border-gray-400 font-semibold py-4 px-6 rounded-2xl text-center transition-all duration-200 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-receipt"></i>
+          View My Orders
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer Note -->
+    <div class="text-center text-xs text-gray-400 pb-6">
+      Powered by Paystack • Transaction ID: {{ payment.ref }}
+    </div>
+  </div>
+
+  <script>
+    // Simple confetti effect
+    function createConfetti() {
+      const colors = ['#10b981', '#34d399', '#6ee7b7'];
+      for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.opacity = Math.random() + 0.5;
+        confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 6000);
+      }
+    }
+    window.onload = createConfetti;
+  </script>
+
+</body>
+</html>

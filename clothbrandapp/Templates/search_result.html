@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Search | Kush Luxury</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container search-page">
+
+    <!-- HEADER -->
+    <div class="search-header text-center">
+        <h2>Search</h2>
+        <p>Results for "<strong>{{ query }}</strong>"</p>
+        <div class="divider"></div>
+    </div>
+
+    {% if products %}
+
+    <div class="row g-4">
+
+        {% for product in products %}
+        <div class="col-6 col-md-4 col-lg-3">
+
+            <div class="product-card">
+
+                <!-- IMAGE -->
+                <div class="product-img">
+                    <a href="{% url 'product_detail' product.slug %}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </a>
+
+                    <!-- QUICK ADD -->
+                    <a href="{% url 'add_to_cart' product.id %}" class="add-btn" data-product-id="{{ product.id }}"
+    data-url="{% url 'add_to_cart' product.id %}">+</a>
+                </div>
+
+                <!-- INFO -->
+                <div class="product-info">
+                    <h6>{{ product.name }}</h6>
+                    <p class="price">₦{{ product.Product_price }}</p>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+
+        <h4>No results found</h4>
+        <p>We couldn’t find anything for "<strong>{{ query }}</strong>"</p>
+
+        <a href="/" class="btn-back">Continue Shopping</a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+
+{% block styles %}
+<style>
+
+/* PAGE */
+.search-page {
+    padding-top: 50px;
+}
+
+/* HEADER */
+.search-header h2 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.search-header p {
+    color: #777;
+}
+
+.divider {
+    width: 50px;
+    height: 2px;
+    background: #C9A96E;
+    margin: 10px auto 30px;
+}
+
+/* CARD */
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.product-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transition: 0.4s;
+}
+
+.product-card:hover img {
+    transform: scale(1.07);
+}
+
+/* ADD BUTTON */
+.add-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: black;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* INFO */
+.product-info {
+    padding: 12px;
+}
+
+.product-info h6 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.price {
+    color: #C9A96E;
+    font-weight: 600;
+}
+
+/* EMPTY */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn-back:hover {
+    background: #C9A96E;
+    color: black;
+}
+
+</style>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const images = document.querySelectorAll(".product-img");
+
+  images.forEach((img, index) => {
+    const delay = index * 120;
+
+    setTimeout(() => {
+      if (img.complete) {
+        img.classList.add("loaded");
+      } else {
+        img.addEventListener("load", () => {
+          img.classList.add("loaded");
+        });
+      }
+    }, delay);
+  });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const carousel = document.querySelector('#homepageCarousel');
+    if (carousel) {
+        new bootstrap.Carousel(carousel, {
+            interval: 4000,
+            pause: false
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.add-btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('data-product-id');
+            const url = this.getAttribute('data-url');
+
+            fetch(url, {   // Make sure URL matches your urls.py
+                method: 'GET',   // or POST if you change to POST
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart count in navbar (example)
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) cartCount.textContent = data.cart_count;
+                    
+                    // Optional: Show success message
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+
+// Simple notification function
+function showNotification(message) {
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+        position: fixed; top: 20px; right: 20px; 
+        background: #4CAF50; color: white; padding: 15px 20px;
+        border-radius: 5px; z-index: 10000;
+    `;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+    
+    setTimeout(() => notif.remove(), 2500);
+}
+</script>
+{% endblock %}

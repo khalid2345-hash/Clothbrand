@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{ product.name }} | Kush Luxury</title>
+{% endblock %}
+
+{% block styles %}
+<style>
+
+/* PAGE */
+.product-detail {
+    margin-top: 50px;
+}
+
+/* IMAGE */
+.product-image img {
+    width: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.product-image img {
+    transition: transform 0.4s ease;
+}
+
+.product-image:hover img {
+    transform: scale(1.05);
+}
+
+/* INFO */
+.product-info {
+    padding: 10px;
+}
+
+/* TITLE */
+.product-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* PRICE */
+.price {
+    font-size: 22px;
+    color: #C9A96E;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* DESCRIPTION */
+.description {
+    color: #555;
+    margin: 15px 0;
+}
+
+/* STOCK */
+.stock.in {
+    color: green;
+}
+
+.stock.out {
+    color: red;
+}
+
+/* BUTTON */
+.btn-add {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    background: #111;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.btn-add:hover {
+    background: #C9A96E;
+    color: black;
+}
+
+.btn-disabled {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    background: #ccc;
+    color: #666;
+    border-radius: 10px;
+}
+
+/* EXTRA */
+.extra-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container product-detail">
+
+    <div class="row g-5">
+
+        <!-- LEFT: IMAGE -->
+        <div class="col-md-6">
+            <div class="product-image">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+        </div>
+
+        <!-- RIGHT: INFO -->
+        <div class="col-md-6">
+
+            <div class="product-info">
+
+                <!-- NAME -->
+                <h2 class="product-title">{{ product.name }}</h2>
+
+                <!-- PRICE -->
+                <p class="price">₦{{ product.Product_price }}</p>
+
+                <!-- RATING -->
+                <div class="rating">
+                    ⭐⭐⭐⭐⭐ <span>(4.8)</span>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <p class="description">
+                    {{ product.description|default:"Premium quality fashion piece designed for elegance and comfort." }}
+                </p>
+
+                 <!-- quantity -->
+                 <input type="number" value="1" min="1" class="qty-input"> 
+
+                <!-- STOCK -->
+                {% if product.in_stock %}
+                    <p class="stock in">In Stock</p>
+                {% else %}
+                    <p class="stock out">Out of Stock</p>
+                {% endif %}
+
+                <!-- ACTIONS -->
+                {% if product.in_stock %}
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button class="btn-add" type="submit">Buy Now</button>
+                </form>
+                {% else %}
+                <button class="btn-disabled">Unavailable</button>
+                {% endif %}
+
+                <!-- EXTRA -->
+                <div class="extra-info">
+                    <p>🚚 Fast delivery available</p>
+                    <p>💳 Secure payment</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
